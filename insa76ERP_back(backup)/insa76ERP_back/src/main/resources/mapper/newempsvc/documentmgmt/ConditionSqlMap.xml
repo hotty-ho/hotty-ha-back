@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.newempsvc.documentmgmt.mapper.ConditionMapper">
+<!--받아오는 결과값을 받아서 세팅하는 곳-->
+    <resultMap type="kr.co.seoulit.insa.newempsvc.documentmgmt.to.ConditionTO" id="resumeResult">
+        <result property="workplaceCode" column="WORKPLACE_CODE"/>
+        <result property="min_age" column="MIN_AGE"/>
+        <result property="max_age" column="MAX_AGE"/>
+        <result property="dept" column="DEPT"/>
+        <result property="last_school" column="LAST_SCHOOL"/>
+        <result property="career" column="CAREER"/>
+        <result property="year" column="YEAR"/>
+        <result property="half" column="HALF"/>
+        <result property="hwp_file" column="HWP_FILE"/>
+    </resultMap>
+
+
+    <insert id="registCondition" parameterType="kr.co.seoulit.insa.newempsvc.documentmgmt.to.ConditionTO">
+        INSERT INTO TERMS_EMP
+        VALUES (#{year},
+                #{half},
+                #{min_age},
+                #{max_age},
+                #{dept},
+                #{last_school},
+                #{career},
+                #{hwp_file},
+                #{workplaceCode})
+    </insert>
+
+    <select id="FindAllTermlist" parameterType="String" resultMap="resumeResult">
+        SELECT
+            year, half, min_age, max_age, dept, last_school, career, hwp_file
+        FROM
+            TERMS_EMP
+        WHERE
+            WORKPLACE_CODE = #{workplaceCode}
+        ORDER BY
+            YEAR DESC, HALF ASC
+    </select>
+
+    <delete id="deleteTerms" parameterType="kr.co.seoulit.insa.newempsvc.documentmgmt.to.ConditionTO">
+        DELETE
+            FROM TERMS_EMP
+        WHERE
+            WORKPLACE_CODE = #{workplaceCode}
+        AND
+            YEAR = #{year}
+        AND
+            HALF = #{half}
+        AND
+            DEPT = #{dept}
+    </delete>
+
+</mapper>

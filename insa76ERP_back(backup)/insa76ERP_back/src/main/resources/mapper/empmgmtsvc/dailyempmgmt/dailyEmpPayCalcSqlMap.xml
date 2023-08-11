@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.dailyempmgmt.mapper.DailyEmpPayCalcMapper">
+
+  <resultMap id="dailyEmpMap" type="DailyEmpTO">
+    <result property="workplaceCode" column="WORKPLACE_CODE" jdbcType="VARCHAR" />
+    <result property="dempCode" column="DEMP_CODE" jdbcType="VARCHAR" />
+    <result property="dempName" column="DEMP_NAME" jdbcType="VARCHAR" />
+    <result property="joinDate" column="JOIN_DATE" jdbcType="DATE" />
+    <result property="isForeign" column="IS_FOREIGN" jdbcType="INTEGER" />
+    <result property="juminNo" column="JUMIN_NO" jdbcType="VARCHAR" />
+    <result property="foreignNo" column="FOREIGN_NO" jdbcType="VARCHAR" />
+    <result property="zipCode" column="ZIP_CODE" jdbcType="VARCHAR" />
+    <result property="addr" column="ADDR" jdbcType="VARCHAR" />
+    <result property="addrDetail" column="ADDR_DETAIL" jdbcType="VARCHAR" />
+    <result property="email" column="EMAIL" jdbcType="VARCHAR" />
+    <result property="tel" column="TEL" jdbcType="VARCHAR" />
+    <result property="phone" column="PHONE" jdbcType="VARCHAR" />
+    <result property="deptCode" column="DEPT_CODE" jdbcType="VARCHAR" />
+    <result property="pjtCode" column="PJT_CODE" jdbcType="VARCHAR" />
+    <result property="posCode" column="POS_CODE" jdbcType="VARCHAR" />
+    <result property="empStatCode" column="EMP_STAT_CODE" jdbcType="VARCHAR" />
+    <result property="jobCode" column="JOB_CODE" jdbcType="VARCHAR" />
+    <result property="payStatCode" column="PAY_STAT_CODE" jdbcType="VARCHAR" />
+    <result property="transAcCode" column="TRANS_AC_CODE" jdbcType="VARCHAR" />
+    <result property="accountNo" column="ACCOUNT_NO" jdbcType="VARCHAR" />
+    <result property="depositor" column="DEPOSITOR" jdbcType="VARCHAR" />
+    <result property="salary" column="SALARY" jdbcType="VARCHAR" />
+    <result property="hourPrice" column="HOUR_PRICE" jdbcType="VARCHAR" />
+    <result property="retireDate" column="RETIRE_DATE" jdbcType="DATE" />
+    <result property="isTaxfree" column="IS_TAXFREE" jdbcType="INTEGER" />
+    <result property="isEmpinsurance" column="IS_EMPINSURANCE" jdbcType="INTEGER" />
+    <result property="isNationalannuity" column="IS_NATIONALANNUITY" jdbcType="INTEGER" />
+    <result property="isHealthinsurance" column="IS_HEALTHINSURANCE" jdbcType="INTEGER" />
+    <result property="nationallityCode" column="NATIONALLITY_CODE" jdbcType="VARCHAR" />
+    <result property="stayStat" column="STAY_STAT" jdbcType="VARCHAR" />
+    <result property="empinsuranceStatCode" column="EMPINSURANCE_STAT_CODE" jdbcType="VARCHAR" />
+    <result property="chJobCode" column="CH_JOB_CODE" jdbcType="VARCHAR" />
+    <result property="memo" column="MEMO" jdbcType="VARCHAR" />
+    <result property="insImpose" column="INS_IMPOSE" jdbcType="VARCHAR" />
+    <result property="insImposeReason" column="INS_IMPOSE_REASON" jdbcType="VARCHAR" />
+    <result property="isStableFund" column="IS_STABLE_FUND" jdbcType="INTEGER" />
+    <result property="checked" column="CHECKED" jdbcType="INTEGER" />
+    <result property="payCode" column="PAY_CODE" jdbcType="VARCHAR" />
+    <result property="payDate" column="PAY_DATE" jdbcType="DATE" />
+    <result property="payStartdate" column="PAY_STARTDATE" jdbcType="DATE" />
+    <result property="payEnddate" column="PAY_ENDDATE" jdbcType="DATE" />
+    <result property="payType" column="PAY_TYPE" jdbcType="VARCHAR" />
+    <result property="payDescription" column="PAY_DESCRIPTION" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  <resultMap id="totalCalcResult" type="DailyEmpCalcTO">
+    <result property="workplaceCode" column="WORKPLACE_CODE" jdbcType="VARCHAR" />
+    <result property="dempCode" column="DEMP_CODE" jdbcType="VARCHAR" />
+    <result property="dempName" column="DEMP_NAME" jdbcType="VARCHAR" />
+    <result property="joinDate" column="JOIN_DATE" jdbcType="DATE" />
+    <result property="isForeign" column="IS_FOREIGN" jdbcType="INTEGER" />
+    <result property="juminNo" column="JUMIN_NO" jdbcType="VARCHAR" />
+    <result property="foreignNo" column="FOREIGN_NO" jdbcType="VARCHAR" />
+    <result property="zipCode" column="ZIP_CODE" jdbcType="VARCHAR" />
+    <result property="addr" column="ADDR" jdbcType="VARCHAR" />
+    <result property="addrDetail" column="ADDR_DETAIL" jdbcType="VARCHAR" />
+    <result property="email" column="EMAIL" jdbcType="VARCHAR" />
+    <result property="tel" column="TEL" jdbcType="VARCHAR" />
+    <result property="phone" column="PHONE" jdbcType="VARCHAR" />
+    <result property="deptCode" column="DEPT_CODE" jdbcType="VARCHAR" />
+    <result property="pjtCode" column="PJT_CODE" jdbcType="VARCHAR" />
+    <result property="posCode" column="POS_CODE" jdbcType="VARCHAR" />
+    <result property="empStatCode" column="EMP_STAT_CODE" jdbcType="VARCHAR" />
+    <result property="jobCode" column="JOB_CODE" jdbcType="VARCHAR" />
+    <result property="payStatCode" column="PAY_STAT_CODE" jdbcType="VARCHAR" />
+    <result property="transAcCode" column="TRANS_AC_CODE" jdbcType="VARCHAR" />
+    <result property="accountNo" column="ACCOUNT_NO" jdbcType="VARCHAR" />
+    <result property="depositor" column="DEPOSITOR" jdbcType="VARCHAR" />
+    <result property="salary" column="SALARY" jdbcType="VARCHAR" />
+    <result property="hourPrice" column="HOUR_PRICE" jdbcType="VARCHAR" />
+    <result property="retireDate" column="RETIRE_DATE" jdbcType="DATE" />
+    <result property="isTaxfree" column="IS_TAXFREE" jdbcType="INTEGER" />
+    <result property="isEmpinsurance" column="IS_EMPINSURANCE" jdbcType="INTEGER" />
+    <result property="isNationalannuity" column="IS_NATIONALANNUITY" jdbcType="INTEGER" />
+    <result property="isHealthinsurance" column="IS_HEALTHINSURANCE" jdbcType="INTEGER" />
+    <result property="nationallityCode" column="NATIONALLITY_CODE" jdbcType="VARCHAR" />
+    <result property="stayStat" column="STAY_STAT" jdbcType="VARCHAR" />
+    <result property="empinsuranceStatCode" column="EMPINSURANCE_STAT_CODE" jdbcType="VARCHAR" />
+    <result property="chJobCode" column="CH_JOB_CODE" jdbcType="VARCHAR" />
+    <result property="memo" column="MEMO" jdbcType="VARCHAR" />
+    <result property="insImpose" column="INS_IMPOSE" jdbcType="VARCHAR" />
+    <result property="insImposeReason" column="INS_IMPOSE_REASON" jdbcType="VARCHAR" />
+    <result property="isStableFund" column="IS_STABLE_FUND" jdbcType="INTEGER" />
+    <result property="checked" column="CHECKED" jdbcType="INTEGER" />
+    <result property="payCode" column="PAY_CODE" jdbcType="VARCHAR" />
+    <result property="payDate" column="PAY_DATE" jdbcType="DATE" />
+    <result property="payStartdate" column="PAY_STARTDATE" jdbcType="DATE" />
+    <result property="payEnddate" column="PAY_ENDDATE" jdbcType="DATE" />
+    <result property="payType" column="PAY_TYPE" jdbcType="VARCHAR" />
+    <result property="payDescription" column="PAY_DESCRIPTION" jdbcType="VARCHAR" />
+    <result property="calcTax" column="CALC_TAX" jdbcType="VARCHAR" />
+    <result property="calcTaxExt" column="CALC_TAX_EXT" jdbcType="VARCHAR" />
+    <result property="calcTaxFree" column="CALC_TAX_FREE" jdbcType="VARCHAR" />
+    <result property="calcTaxOth" column="CALC_TAX_OTH" jdbcType="VARCHAR" />
+    <result property="calcCom" column="CALC_COM" jdbcType="VARCHAR" />
+    <result property="calcHi" column="CALC_HI" jdbcType="VARCHAR" />
+    <result property="calcEi" column="CALC_EI" jdbcType="VARCHAR" />
+    <result property="calcNp" column="CALC_NP" jdbcType="VARCHAR" />
+    <result property="calcLti" column="CALC_LTI" jdbcType="VARCHAR" />
+    <result property="calcInTax" column="CALC_IN_TAX" jdbcType="VARCHAR" />
+    <result property="calcLocalTax" column="CALC_LOCAL_TAX" jdbcType="VARCHAR" />
+    <result property="calcTotalPay" column="CALC_TOTAL_PAY" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <parameterMap id="totalParams" type="java.util.HashMap">
+    <parameter property="dempCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="paystatcode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="isTaxfree" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="isEmpinsurance" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="isNationalannuity" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="isHealthinsurance" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="sumTax" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="sumTaxAdd" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="sumTaxExt" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="sumTaxFree" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="sumTaxOth" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    <parameter property="errorCode" jdbcType="DECIMAL" javaType="long" mode="OUT"/>
+    <parameter property="errorMsg" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    <parameter property="totalResult" jdbcType="CURSOR" javaType="java.sql.ResultSet"  mode="OUT"
+               resultMap="totalCalcResult"/>
+  </parameterMap>
+
+  <select id="selectDailyCalcList" resultMap="dailyEmpMap">
+    SELECT
+      *
+    FROM
+      DAILY_EMP
+    WHERE PAY_CODE IS NOT NULL
+    ORDER BY
+      DEMP_CODE
+  </select>
+
+  <select id="registerDailyCalc" parameterMap="totalParams" statementType="CALLABLE">
+			<![CDATA[
+    {call P_DAILY_EMP_CALC(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}
+    ]]>
+	</select>
+
+</mapper>

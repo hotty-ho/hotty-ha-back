@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.EmpAppointmentMapper">
+
+  
+  <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentTypeTO" id="empAppointmentResult">
+    <result property="empCode" column="EMP_CODE" />
+    <result property="hosu" column="HOSU" />
+    <result property="lastDept" column="LAST_DEPT" />
+    <result property="nextDept" column="NEXT_DEPT" />
+    <result property="appointmentDate" column="APPOINTMENT_DATE" />
+    <result property="dispatchDate" column="DISPATCH_DATE" />
+    <result property="dispatchReturnDate" column="DISPATCH_RETURN_DATE" />
+    <result property="dispatchPosition" column="DISPATCH_POSITION" />
+    <result property="lastWorkplace" column="LAST_WORKPLACE" />
+    <result property="lastRegion" column="LAST_REGION" />
+    <result property="lastHobong" column="LAST_HOBONG" />
+    <result property="nextHobong" column="NEXT_HOBONG" />
+    <result property="promotionDate" column="PROMOTION_DATE" />
+    <result property="lastPosition" column="LAST_POSITION" />
+    <result property="nextPosition" column="NEXT_POSITION" />
+    <result property="retirementDate" column="RETIREMENT_DATE" />
+    <result property="leaveDate" column="LEAVE_DATE" />
+    <result property="reinstatementDate" column="REINSTATEMENT_DATE" />
+    <result property="leaveType" column="LEAVE_TYPE" />
+    <result property="empName" column="EMP_NAME" />
+  </resultMap>
+  
+  <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentTO" id="empAppointmentCountResult">
+    <result property="deptChangeStatus" column="DEPT_CHANGE_STATUS" />
+    <result property="positionChangeStatus" column="POSITION_CHANGE_STATUS" />
+    <result property="hobongChangeStatus" column="HOBONG_CHANGE_STATUS" />
+    <result property="retirementStatus" column="RETIREMENT_STATUS" />
+    <result property="dispatchStatus" column="DISPATCH_STATUS" />
+    <result property="leaveStatus" column="LEAVE_STATUS" />
+  </resultMap>
+  
+   <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentInfoTO" id="empAppointmentInfoResult">
+    <result property="hosu" column="HOSU" />
+    <result property="title" column="TITLE" />
+    <result property="appointmentDate" column="APPOINTMENT_DATE" />
+    <result property="appointmentDetail" column="APPOINTMENT_DETAIL" />
+    <result property="appointmentCount" column="APPOINTMENT_COUNT" />
+    <result property="approvalStatus" column="APPROVAL_STATUS" />
+  </resultMap>
+  
+   <parameterMap type="map" id="insertEmpAppointment2" >
+      <parameter property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />      
+      <parameter property="hosu" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="appointNext" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="retirementDate" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="reinstatementDate" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="type" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+   </parameterMap>
+  	
+
+	<insert id="insertEmpAppointment2" parameterMap="insertEmpAppointment2">
+		{call P_INSERT_APPOINTMENT_EMP(?,?,?,?,?,?)}
+	</insert>
+	 <select id="selectAllAppointEmp" parameterType="String" resultMap="empAppointmentResult">
+			SELECT E.HOSU, 
+			       E.EMP_CODE,
+			       M.LAST_DEPT,
+			       M.NEXT_DEPT,
+			       H.LAST_HOBONG,
+			       H.NEXT_HOBONG,
+			       P.LAST_POSITION,
+			       P.NEXT_POSITION,
+			       L.LEAVE_DATE,
+			       L.REINSTATEMENT_DATE,
+			       D.DISPATCH_DATE,
+			       D.DISPATCH_RETURN_DATE,
+			       D.DISPATCH_POSITION,
+			       D.DISPATCH_WORKPLACE,
+			       D.DISPATCH_DEPT,
+			       D.DISPATCH_REGION,
+			       R.RETIREMENT_DATE
+			  FROM APPOINTMENT_EMP E, 
+			       DEPT_MOVE M,
+			       HOBONG_PROMOTION H, 
+			       POSITION_PROMOTION P,
+			       LEAVE L, 
+			       DISPATCH D, 
+			       RETIREMENT R
+			 WHERE E.HOSU = #{hosu}
+			   AND M.HOSU(+) = E.HOSU
+			   AND H.HOSU(+) = E.HOSU
+			   AND P.HOSU(+) = E.HOSU
+			   AND L.HOSU(+) = E.HOSU
+			   AND D.HOSU(+) = E.HOSU
+			   AND R.HOSU(+) = E.HOSU
+			   AND M.EMP_CODE(+) = E.EMP_CODE
+			   AND H.EMP_CODE(+) = E.EMP_CODE
+			   AND P.EMP_CODE(+) = E.EMP_CODE
+			   AND L.EMP_CODE(+) = E.EMP_CODE
+			   AND D.EMP_CODE(+) = E.EMP_CODE
+			   AND R.EMP_CODE(+) = E.EMP_CODE
+  	</select>
+	  <update id="updateAppintmentList" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentTypeTO">
+  		BEGIN
+  				<if test="nextHobong == null">
+  			UPDATE
+  				EMP
+  			<trim prefix="SET" suffixOverrides=",">
+  				<if test="nextDept != null">DEPT_CODE=(SELECT DEPT_CODE FROM DEPT WHERE DEPT_NAME = #{nextDept}),</if>
+  				<if test="nextPosition != null">POSITION_CODE=(SELECT POSITION_CODE FROM POSITION WHERE POSITION = #{nextPosition}),</if>
+  			</trim>
+			WHERE 
+				EMP_CODE = #{empCode};
+				</if>
+				
+			UPDATE
+				WORK_INFO
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="nextPosition != null">POSITION=#{nextPosition},</if>
+				<if test="nextDept != null">DEPT_NAME=#{nextDept},</if>
+				<if test="nextHobong != null">HOBONG=#{nextHobong},</if>
+			</trim>
+			WHERE
+				EMP_CODE = #{empCode};
+				
+			UPDATE
+				APPOINTMENT_INFO
+			<trim prefix="SET" suffixOverrides=",">
+				APPOINTMENT_COUNT=(SELECT COUNT(*) FROM APPOINTMENT_EMP WHERE HOSU=#{hosu}),
+				APPROVAL_STATUS='승인'
+			</trim>
+			WHERE
+				HOSU = #{hosu};
+				
+			UPDATE
+				APPOINTMENT_EMP
+			SET
+				APPROVAL_STATUS='승인'
+			WHERE
+				HOSU = #{hosu};
+  		END;
+      </update>
+      
+      <select id="getHosu" resultType="string">
+		SELECT (SELECT TO_CHAR(SYSDATE, 'YYYYMM') FROM dual)
+			   ||'-'||
+			   (SELECT LPAD(NVL(MAX(TO_NUMBER(SUBSTR(HOSU,INSTR(HOSU,'-') +1)))+1,1),2,0)
+		  FROM APPOINTMENT_INFO
+		 WHERE HOSU LIKE (SELECT TO_CHAR(SYSDATE, 'YYYYMM') FROM dual)||'%') AS HOSU FROM DUAL
+      </select>
+      
+     <insert id="insertAppointmentInfo" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentInfoTO">
+		INSERT INTO APPOINTMENT_INFO VALUES(
+					#{hosu, jdbcType=VARCHAR},
+					#{title, jdbcType=VARCHAR},
+					TO_DATE(#{appointmentDate}, 'YYYY/MM/DD'),
+					#{appointmentDetail, jdbcType=VARCHAR},
+					#{appointmentCount, jdbcType=VARCHAR},
+					#{approvalStatus, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateEmpAppoint" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentTO">
+		UPDATE WORK_INFO
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="nextHobong != null">HOBONG = #{nextHobong},</if>
+      		<if test="nextPosition != null">POSITION = #{nextPosition},</if>
+			<if test="nextDept != null">DEPT_NAME = #{nextDept},</if>
+      	</trim>
+		WHERE EMP_CODE = #{empCode, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateEmp" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpAppointmentTO">
+	 UPDATE EMP
+	 <trim prefix="SET" suffixOverrides=",">
+	 <if test="nextDept != null">
+		 DEPT_CODE=(SELECT DEPT_CODE
+	 				   FROM DEPT
+	 				  WHERE 1=1
+	 				    AND DEPT_NAME = #{nextDept}),
+	 </if>
+	 <if test="nextPosition != null">				   
+	 	 POSITION_CODE=(SELECT POSITION_CODE 
+	 				      FROM POSITION
+	 				     WHERE 1=1
+	 				       AND POSITION = #{nextPosition})
+	 </if>
+	 </trim>
+	 	WHERE EMP_CODE = #{empCode}
+	</update>
+	
+	<select id="selectAppintmentInfo" resultMap="empAppointmentInfoResult">
+             SELECT AI.HOSU,
+       	     		AI.TITLE,
+       				AI.APPOINTMENT_DATE,
+       				AI.APPOINTMENT_DETAIL,
+       				AI.APPROVAL_STATUS,
+       				COUNT(A.HOSU) AS APPOINTMENT_COUNT
+               FROM APPOINTMENT_INFO AI, 
+                    APPOINTMENT_EMP A
+			  WHERE AI.APPROVAL_STATUS = #{searchType}
+                AND AI.HOSU=A.HOSU(+)
+           GROUP BY AI.HOSU,
+       	            AI.TITLE,
+       			    AI.APPOINTMENT_DATE,
+                    AI.APPOINTMENT_DETAIL,
+                    AI.APPROVAL_STATUS
+           ORDER BY AI.HOSU
+	</select>
+	<select id="countAppointmentEmp" resultMap="empAppointmentCountResult">
+			SELECT SUM(DECODE(DEPT_CHANGE_STATUS,'Y',1,0)) DEPT_CHANGE_STATUS,
+			       SUM(DECODE(POSITION_CHANGE_STATUS,'Y',1,0)) POSITION_CHANGE_STATUS,
+			       SUM(DECODE(HOBONG_CHANGE_STATUS,'Y',1,0)) HOBONG_CHANGE_STATUS,
+			       SUM(DECODE(RETIREMENT_STATUS,'Y',1,0)) RETIREMENT_STATUS,
+			       SUM(DECODE(DISPATCH_STATUS,'Y',1,0)) DISPATCH_STATUS,
+			       SUM(DECODE(LEAVE_STATUS,'Y',1,0)) LEAVE_STATUS
+			  FROM APPOINTMENT_EMP
+			 WHERE HOSU = #{hosu}
+			 GROUP BY HOSU
+	</select>
+	<select id="selectAppointmentinfoEmp" resultMap="empAppointmentResult">
+		<if test='type == "부서이동"'>
+			 SELECT A.HOSU, 
+ 					A.EMP_CODE,
+			 		E.EMP_NAME,
+			        D.LAST_DEPT,
+			        D.NEXT_DEPT,
+              		A.REQUEST_DATE AS APPOINTMENT_DATE
+ 			   FROM DEPT_MOVE D, 
+                    APPOINTMENT_EMP A,
+                    EMP E
+              WHERE A.HOSU=D.HOSU
+              	AND A.HOSU=#{hosu}
+                AND A.EMP_CODE=D.EMP_CODE
+                AND A.EMP_CODE=E.EMP_CODE
+
+         </if>
+         <if test='type == "승진"'>
+			SELECT A.HOSU, 
+			 		A.EMP_CODE, 
+			 		E.EMP_NAME,
+			        P.LAST_POSITION,
+			        P.NEXT_POSITION,
+			        A.REQUEST_DATE AS APPOINTMENT_DATE
+ 			   FROM POSITION_PROMOTION P, 
+                    APPOINTMENT_EMP A,
+                    EMP E
+              WHERE A.HOSU=P.HOSU
+                AND A.HOSU=#{hosu}
+                AND A.EMP_CODE=P.EMP_CODE
+                AND A.EMP_CODE=E.EMP_CODE
+         </if>
+         <if test='type == "호봉승급"'>
+			SELECT  A.HOSU, 
+			 		A.EMP_CODE, 
+			 		E.EMP_NAME,
+			        H.LAST_HOBONG,
+			        H.NEXT_HOBONG,
+			        A.REQUEST_DATE AS APPOINTMENT_DATE
+ 			   FROM HOBONG_PROMOTION H, 
+                    APPOINTMENT_EMP A,
+                    EMP E
+              WHERE A.HOSU=H.HOSU
+                AND A.HOSU=#{hosu}
+                AND A.EMP_CODE=H.EMP_CODE
+                AND A.EMP_CODE=E.EMP_CODE
+         </if>
+         <if test='type == "파견"'>
+			SELECT  A.HOSU, 
+			 		A.EMP_CODE, 
+			 		E.EMP_NAME,
+			        D.DISPATCH_RETURN_DATE,
+              		D.DISPATCH_POSITION,
+              		D.DISPATCH_DEPT,
+              		D.DISPATCH_WORKPLACE,
+              		D.DISPATCH_REGION,
+			        A.REQUEST_DATE AS APPOINTMENT_DATE
+ 			   FROM DISPATCH D, 
+                    APPOINTMENT_EMP A,
+                    EMP E
+              WHERE A.HOSU=D.HOSU
+                AND A.HOSU=#{hosu}
+                AND A.EMP_CODE=E.EMP_CODE
+         </if>
+         <if test='type == "휴직"'>
+			SELECT  A.HOSU, 
+			 		A.EMP_CODE, 
+			 		E.EMP_NAME,
+			        L.LEAVE_DATE,
+              		L.REINSTATEMENT_DATE,
+			        A.REQUEST_DATE AS APPOINTMENT_DATE
+ 			   FROM LEAVE L, 
+                    APPOINTMENT_EMP A,
+                    EMP E
+              WHERE A.HOSU=L.HOSU
+                AND A.HOSU=#{hosu}
+                AND A.EMP_CODE=L.EMP_CODE
+                AND A.EMP_CODE=E.EMP_CODE
+         </if>
+         <if test='type == "퇴직"'>
+			SELECT  A.HOSU, 
+			 		A.EMP_CODE, 
+			 		E.EMP_NAME,
+			        R.RETIREMENT_DATE,
+			        A.REQUEST_DATE AS APPOINTMENT_DATE
+ 			   FROM RETIREMENT R, 
+                    APPOINTMENT_EMP A,
+                    EMP E
+              WHERE A.HOSU=R.HOSU
+                AND A.HOSU=#{hosu}
+                AND A.EMP_CODE=R.EMP_CODE
+                AND A.EMP_CODE=E.EMP_CODE
+         </if>
+	</select>
+	<select id="selectAppointmentEmp" resultMap="empAppointmentResult">
+			SELECT A.HOSU,
+			       E.EMP_NAME,
+			       D.LAST_DEPT,
+			       D.NEXT_DEPT,
+			       H.LAST_HOBONG,
+			       H.NEXT_HOBONG,
+			       P.LAST_POSITION,
+			       P.NEXT_POSITION,
+			       AI.APPOINTMENT_DATE
+			FROM APPOINTMENT_EMP A,
+			     EMP E,
+					 DEPT_MOVE D,
+			     HOBONG_PROMOTION H,
+			     POSITION_PROMOTION P,
+			     APPOINTMENT_INFO AI
+			WHERE A.EMP_CODE=#{empCode}
+				AND AI.HOSU = A.HOSU
+			  AND A.EMP_CODE=D.EMP_CODE(+)
+			  AND A.EMP_CODE=H.EMP_CODE(+)
+			  AND A.EMP_CODE=P.EMP_CODE(+)
+			  AND A.HOSU=D.HOSU(+)
+			  AND A.HOSU=H.HOSU(+)
+			  AND A.HOSU=P.HOSU(+)
+			  AND E.EMP_CODE=A.EMP_CODE
+			  AND A.APPROVAL_STATUS='승인'
+			ORDER BY AI.APPOINTMENT_DATE
+	</select>
+</mapper>

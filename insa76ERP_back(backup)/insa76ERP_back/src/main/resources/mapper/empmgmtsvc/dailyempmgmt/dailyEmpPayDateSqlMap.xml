@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.dailyempmgmt.mapper.DailyEmpPayDateMapper">
+
+    <parameterMap id="LISTDATA" type="java.util.List">
+        <parameter property="payCode" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+        <parameter property="payDate" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+        <parameter property="payStartdate" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+        <parameter property="payEnddate" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+        <parameter property="payType" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+        <parameter property="payDescription" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+    </parameterMap>
+
+    <resultMap id="dailyPayDateMap" type="DailyEmpPayDateTO">
+        <result property="payCode" column="PAY_CODE" jdbcType="VARCHAR" />
+        <result property="payDate" column="PAY_DATE" jdbcType="DATE" />
+        <result property="payStartdate" column="PAY_STARTDATE" jdbcType="DATE" />
+        <result property="payEnddate" column="PAY_ENDDATE" jdbcType="DATE" />
+        <result property="payType" column="PAY_TYPE" jdbcType="VARCHAR" />
+        <result property="payDescription" column="PAY_DESCRIPTION" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!--  <insert id="insertDailyEmpPayDate" parameterMap="java.util.List">
+                <![CDATA[
+          {call P_INSERT_DAILYEMP_PAYDATELIST(?, ?, ?, ?, ?, ?)}
+          ]]>
+     </insert>-->
+
+    <insert id="insertDailyEmpPayDate" parameterType="java.util.List">
+        <foreach collection="list" item="item" open="INSERT ALL" close="SELECT * FROM DUAL" separator=" ">
+            INTO DAILY_DATE
+            (
+            PAY_CODE
+            ,PAY_DATE
+            ,PAY_STARTDATE
+            ,PAY_ENDDATE
+            ,PAY_TYPE
+            ,PAY_DESCRIPTION
+            )
+            VALUES
+            (
+            #{item.payCode}
+            , #{item.payDate}
+            , #{item.payStartdate}
+            , #{item.payEnddate}
+            , #{item.payType}
+            , #{item.payDescription, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteDailyEmpPayDate">
+        DELETE DAILY_DATE
+    </delete>
+
+    <select id="selectDailyPayDateList" resultMap="dailyPayDateMap">
+        select * FROM DAILY_DATE
+    </select>
+
+    <insert id="insertDailyPayDate" parameterType="DailyEmpPayDateTO">
+        INSERT INTO DAILY_DATE
+        VALUES (
+                   #{payCode, jdbcType=VARCHAR},
+                   #{payDate, jdbcType=DATE},
+                   #{payStartdate, jdbcType=DATE},
+                   #{payEnddate, jdbcType=DATE},
+                   #{payType, jdbcType=VARCHAR},
+                   #{payDescription, jdbcType=VARCHAR}
+               )
+    </insert>
+
+    <update id="updateDailyPayDate" parameterType="DailyEmpPayDateTO">
+        UPDATE DAILY_DATE
+        SET
+            PAY_CODE = #{payCode, jdbcType=VARCHAR},
+            PAY_DATE = TO_DATE(SUBSTR(REPLACE(#{payDate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            PAY_STARTDATE = TO_DATE(SUBSTR(REPLACE(#{payStartdate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            PAY_ENDDATE = TO_DATE(SUBSTR(REPLACE(#{payEnddate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            PAY_TYPE = #{payType, jdbcType=VARCHAR},
+            PAY_DESCRIPTION = #{payDescription, jdbcType=VARCHAR}
+        WHERE PAY_CODE = #{payCode}
+    </update>
+
+    <delete id="deleteDailyPayDate" parameterType="DailyEmpPayDateTO">
+        DELETE FROM DAILY_DATE
+        WHERE PAY_CODE = #{payCode}
+    </delete>
+    <insert id="insertDailyPayDateTarget" parameterType="DailyEmpTO">
+        INSERT INTO
+            DAILY_EMP
+        VALUES (
+                   #{workplaceCode, jdbcType=VARCHAR},
+                   #{dempCode, jdbcType=VARCHAR},
+                   #{dempName, jdbcType=VARCHAR},
+                   TO_DATE(SUBSTR(REPLACE(#{joinDate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+                   TO_NUMBER(#{isForeign, jdbcType=INTEGER}),
+                   #{juminNo, jdbcType=VARCHAR},
+                   #{foreignNo, jdbcType=VARCHAR},
+                   #{zipCode, jdbcType=VARCHAR},
+                   #{addr, jdbcType=VARCHAR},
+                   #{addrDetail, jdbcType=VARCHAR},
+                   #{email, jdbcType=VARCHAR},
+                   #{tel, jdbcType=VARCHAR},
+                   #{phone, jdbcType=VARCHAR},
+                   #{deptCode, jdbcType=VARCHAR},
+                   #{pjtCode, jdbcType=VARCHAR},
+                   #{posCode, jdbcType=VARCHAR},
+                   #{empStatCode, jdbcType=VARCHAR},
+                   #{jobCode, jdbcType=VARCHAR},
+                   #{payStatCode, jdbcType=VARCHAR},
+                   #{transAcCode, jdbcType=VARCHAR},
+                   #{accountNo, jdbcType=VARCHAR},
+                   #{depositor, jdbcType=VARCHAR},
+                   #{salary, jdbcType=VARCHAR},
+                   #{hourPrice, jdbcType=VARCHAR},
+                   TO_DATE(SUBSTR(REPLACE(#{retireDate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+                   TO_NUMBER(#{isTaxfree, jdbcType=INTEGER}),
+                   TO_NUMBER(#{isEmpinsurance, jdbcType=INTEGER}),
+                   TO_NUMBER(#{isNationalannuity, jdbcType=INTEGER}),
+                   TO_NUMBER(#{isHealthinsurance, jdbcType=INTEGER}),
+                   #{nationallityCode, jdbcType=VARCHAR},
+                   #{stayStat, jdbcType=VARCHAR},
+                   #{empinsuranceStatCode, jdbcType=VARCHAR},
+                   #{chJobCode, jdbcType=VARCHAR},
+                   #{memo, jdbcType=VARCHAR},
+                   #{insImpose, jdbcType=VARCHAR},
+                   #{insImposeReason, jdbcType=VARCHAR},
+                   TO_NUMBER(#{isStableFund, jdbcType=INTEGER}),
+                   0,
+                   #{payCode, jdbcType=VARCHAR},
+                   TO_DATE(#{payDate, jdbcType=DATE}, 'YYYY-MM-DD'),
+                   TO_DATE(#{payStartdate, jdbcType=DATE}, 'YYYY-MM-DD'),
+                   TO_DATE(#{payEnddate, jdbcType=DATE}, 'YYYY-MM-DD'),
+                   #{payType, jdbcType=VARCHAR},
+                   #{payDescription, jdbcType=VARCHAR}
+               )
+    </insert>
+
+
+    <update id="updateDailyPayDateTarget" parameterType="DailyEmpTO">
+        UPDATE
+            DAILY_EMP
+        SET
+            DEMP_NAME = #{dempName, jdbcType=VARCHAR},
+            JOIN_DATE = TO_DATE(SUBSTR(REPLACE(#{joinDate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            IS_FOREIGN = TO_NUMBER(#{isForeign, jdbcType=INTEGER}),
+            JUMIN_NO = #{juminNo, jdbcType=VARCHAR},
+            FOREIGN_NO = #{foreignNo, jdbcType=VARCHAR},
+            ZIP_CODE = #{zipCode, jdbcType=VARCHAR},
+            ADDR = #{addr, jdbcType=VARCHAR},
+            ADDR_DETAIL = #{addrDetail, jdbcType=VARCHAR},
+            EMAIL = #{email, jdbcType=VARCHAR},
+            TEL = #{tel, jdbcType=VARCHAR},
+            PHONE = #{phone, jdbcType=VARCHAR},
+            DEPT_CODE = #{deptCode, jdbcType=VARCHAR},
+            PJT_CODE = #{pjtCode, jdbcType=VARCHAR},
+            POS_CODE = #{posCode, jdbcType=VARCHAR},
+            EMP_STAT_CODE = #{empStatCode, jdbcType=VARCHAR},
+            JOB_CODE = #{jobCode, jdbcType=VARCHAR},
+            PAY_STAT_CODE = #{payStatCode, jdbcType=VARCHAR},
+            TRANS_AC_CODE = #{transAcCode, jdbcType=VARCHAR},
+            ACCOUNT_NO = #{accountNo, jdbcType=VARCHAR},
+            DEPOSITOR = #{depositor, jdbcType=VARCHAR},
+            SALARY = #{salary, jdbcType=VARCHAR},
+            HOUR_PRICE = #{hourPrice, jdbcType=VARCHAR},
+            RETIRE_DATE = TO_DATE(SUBSTR(REPLACE(#{retireDate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            IS_TAXFREE = TO_NUMBER(#{isTaxfree, jdbcType=INTEGER}),
+            IS_EMPINSURANCE = TO_NUMBER(#{isEmpinsurance, jdbcType=INTEGER}),
+            IS_NATIONALANNUITY = TO_NUMBER(#{isNationalannuity, jdbcType=INTEGER}),
+            IS_HEALTHINSURANCE = TO_NUMBER(#{isHealthinsurance, jdbcType=INTEGER}),
+            NATIONALLITY_CODE = #{nationallityCode, jdbcType=VARCHAR},
+            STAY_STAT = #{stayStat, jdbcType=VARCHAR},
+            EMPINSURANCE_STAT_CODE = #{empinsuranceStatCode, jdbcType=VARCHAR},
+            CH_JOB_CODE = #{chJobCode, jdbcType=VARCHAR},
+            MEMO = #{memo, jdbcType=VARCHAR},
+            INS_IMPOSE = #{insImpose, jdbcType=VARCHAR},
+            INS_IMPOSE_REASON = #{insImposeReason, jdbcType=VARCHAR},
+            IS_STABLE_FUND = TO_NUMBER(#{isStableFund, jdbcType=INTEGER}),
+            CHECKED = 0,
+            PAY_CODE = #{payCode, jdbcType=VARCHAR},
+            PAY_DATE = TO_DATE(SUBSTR(REPLACE(#{payDate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            PAY_STARTDATE = TO_DATE(SUBSTR(REPLACE(#{payStartdate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            PAY_ENDDATE = TO_DATE(SUBSTR(REPLACE(#{payEnddate, jdbcType=DATE}, '-', ''), 0, 8), 'YYYYMMDD'),
+            PAY_TYPE = #{payType, jdbcType=VARCHAR},
+            PAY_DESCRIPTION = #{payDescription, jdbcType=VARCHAR}
+        WHERE
+            DEMP_CODE = #{dempCode}
+    </update>
+
+    <delete id="deleteDailyPayDateTarget" parameterType="DailyEmpTO">
+        DELETE FROM
+            DAILY_EMP
+        WHERE
+            DEMP_CODE = #{dempCode}
+    </delete>
+</mapper>

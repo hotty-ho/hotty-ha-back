@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.documentmgmt.mapper.DocumentsMapper">
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.DocumentsTO" id="documentsResult">
+        <result property="empName" column="EMP_NAME"/>
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="proofTypeCode" column="PROOF_CODE"/>
+        <result property="proofTypeName" column="DETAIL_CODE_NAME"/>
+        <result property="dept" column="DEPT_NAME"/>
+        <result property="startDate" column="REQUEST_DATE"/>
+        <result property="cause" column="REASON"/>
+        <result property="applovalStatus" column="APPLOVALSTATUS"/>
+    </resultMap>
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.DocumentsTO" id="documentsResult1">
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="proofTypeName" column="PROOF_NAME"/>
+        <result property="position" column="POSITION"/>
+        <result property="dept" column="DEPT_NAME"/>
+        <result property="startDate" column="REQUEST_DATE"/>
+        <result property="cause" column="REASON"/>
+        <result property="applovalStatus" column="APPLOVALSTATUS"/>
+    </resultMap>
+
+
+    <insert id="insertDocumentsRequest" parameterType="kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.DocumentsTO">
+        INSERT INTO DOCUMENTS VALUES
+            (#{empCode}
+            ,#{proofTypeCode}
+            ,#{proofTypeName}
+            ,#{position}
+            ,#{dept}
+            ,#{startDate}
+            ,#{cause}
+            ,#{applovalStatus}
+            ,sequence_tab1.nextval)
+    </insert>
+
+    <select id="selectDocumentsList" parameterType="map" resultMap="documentsResult1">
+        SELECT E.EMP_CODE
+             ,E.EMP_NAME
+             ,D.PROOF_NAME
+             ,D.POSITION
+             ,D.DEPT_NAME
+             ,D.REQUEST_DATE
+             ,D.REASON
+             ,D.APPLOVALSTATUS
+        FROM DOCUMENTS D
+           , EMP E
+        WHERE E.EMP_CODE=#{empCode}
+          AND D.PROOF_CODE=#{proofTypeCode}
+          AND D.REQUEST_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    </select>
+
+    <select id="selectDocumentsList1" parameterType="map" resultMap="documentsResult1">
+        SELECT E.EMP_CODE
+             ,E.EMP_NAME
+             ,D.PROOF_NAME
+             ,D.POSITION
+             ,D.DEPT_NAME
+             ,D.REQUEST_DATE
+             ,D.REASON
+             ,D.APPLOVALSTATUS
+        FROM DOCUMENTS D
+           , EMP E
+        WHERE E.EMP_CODE=#{empCode}
+          AND D.REQUEST_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    </select>
+
+    <delete id="deleteDocument" parameterType="kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.DocumentsTO">
+        DELETE FROM DOCUMENTS
+        WHERE EMP_CODE=#{empCode}
+          AND REQUEST_DATE=TO_DATE(#{startDate},'YYYY-MM-DD')
+          AND PROOF_NAME=#{proofTypeName}
+    </delete>
+
+
+    <update id="updateDocument" parameterType="kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.DocumentsTO">
+        UPDATE DOCUMENTS SET
+            APPLOVALSTATUS = #{applovalStatus}
+        WHERE EMP_CODE = #{empCode}
+          AND REQUEST_DATE = TO_DATE(#{startDate},'YYYY-MM-DD')
+          AND PROOF_NAME=#{proofTypeName}
+    </update>
+
+
+</mapper>
